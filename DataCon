@@ -1,0 +1,80 @@
+   class BasicClass
+    {
+        public SqlConnection con;
+        public BasicClass()
+        {
+        }
+        public SqlConnection getCon()
+        {
+            con = new SqlConnection("data source=(local);initial catalog=jwglxt; user id=sa;pwd=slhslh001");
+            con.Open();
+            return con;
+
+        }
+        #region 获取数据集，将执行之后的sql语句放入数据集。
+         
+        public DataSet getds(string strsql,string tbname)
+        {
+            SqlCommand cmd = new SqlCommand(strsql, con);
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataSet ds=new DataSet();
+            adapter.Fill(ds, tbname);
+            return ds;
+        }
+        #endregion
+
+        #region 对gridview的赋值(未完成)
+        public void dgvBind(string field,int width)
+        {
+
+        }
+        #endregion
+
+        #region 执行聚合函数返回整型值EXECSQLint
+        //摘要：
+                //传入参数为含avg，sum，count，max，min的SQL语句
+        public int EXECSQLint(string strql){
+            int a;
+            SqlConnection mycon;
+            mycon=getCon();
+            SqlCommand cmd = new SqlCommand(strql, mycon);
+            try
+            {
+                cmd.ExecuteNonQuery();
+                a = Convert.ToInt32(cmd.ExecuteScalar());
+                con.Close();
+                con.Dispose();
+            }
+            catch
+            {
+                a = -100000;
+                con.Close();
+                con.Dispose();
+            }
+
+            return a;
+        }
+#endregion 
+        #region 执行sql语句并返回是否执行成功EXECSQL（）
+        public Boolean EXECSQL(string strsql)
+        {
+            SqlConnection mycon = getCon();
+            SqlCommand mycmd = new SqlCommand(strsql, mycon);
+            try
+            {
+                mycmd.ExecuteNonQuery();
+                mycmd.Dispose();
+                mycon.Close();
+                
+            }
+            catch
+            {
+                mycmd.Dispose();
+                mycon.Close();
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
+    }
